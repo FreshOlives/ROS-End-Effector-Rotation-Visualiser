@@ -4,7 +4,6 @@ class Animator {
         this.i = nFrames;
         this.j = nFrames;
         this.k = nFrames;
-        // this.waitStart = millis();
         this.isWaiting = false;
         this.waitDelay = waitDelay;
         this.rotState = 0;

@@ -6,6 +6,7 @@
 
 class CustomGUI {
     constructor() {
+        this._controlsLabel = createDiv('<b>Object Control</b>');
         // Buttons
         this._animateButton = createButton('Animate');
         this._wireframeButton = createButton('Toggle Wireframe');
@@ -29,6 +30,7 @@ class CustomGUI {
         this._yawLabel = createDiv("Yaw")
         // Currently Selected Rotation Type
         this.rotationType = "RPY";
+        this.rotationAxis = "";
         this._rotationTypeLabel = createDiv("Current Rotation Type: " + this.rotationType)
         // Toggle wireframe view
         this.wireframe = false;
@@ -41,45 +43,71 @@ class CustomGUI {
     * Initialize the GUI
     */
     init() {
+        this._controlsLabel.position(601, 255);
+        this._controlsLabel.style('font-size','20px');
+        this._controlsLabel.style('text-align','center');
+        this._controlsLabel.style('width','239px');
+        this._controlsLabel.style('background-color','rgb(200,200,200)');
+
         this._animateButton.position(610, 10);
-        this._animateButton.size(100,50);
+        this._animateButton.size(105,50);
         
-        this._EulButton.position(720, 70);
-        this._EulButton.size(100,50);
+        this._resetButton.position(725, 10);
+        this._resetButton.size(105,50);
+
+        this._EulButton.position(725, 70);
+        this._EulButton.size(105,50);
         
         this._RPYButton.position(610, 70);
-        this._RPYButton.size(100,50);
+        this._RPYButton.size(105,50);
         
         this._wireframeButton.position(610, 130);
-        this._wireframeButton.size(100,50);
+        this._wireframeButton.size(220,30);
         
-        this._resetButton.position(720, 10);
-        this._resetButton.size(100,50);
         
-        this._rollLabel.position(665,205)
-        this._rollInput.position(610,200)
-        this._rollSlider.position(700,204)
+        this._rollLabel.position(665,169)
+        this._rollInput.position(610,165)
+        this._rollSlider.position(700,168)
         this._rollInput.size(40,20)
         
-        this._pitchLabel.position(665,235)
-        this._pitchInput.position(610,230)
-        this._pitchSlider.position(700,234)
+        this._pitchLabel.position(665,199)
+        this._pitchInput.position(610,195)
+        this._pitchSlider.position(700,198)
         this._pitchInput.size(40,20)
         
-        this._yawLabel.position(665,265)
-        this._yawInput.position(610,260)
-        this._yawSlider.position(700,264)
+        this._yawLabel.position(665,229)
+        this._yawInput.position(610,225)
+        this._yawSlider.position(700,228)
         this._yawInput.size(40,20)
         
         this._rotationTypeLabel.position(10, 10)
 
-        // Button Callbacks
-        // Inline functions used to avoid scope issues (cant use 'this' in callback functions)
+        // Interactive Callbacks
+        // Using inline functions used to avoid scope issues (cant use 'this' in callback functions)
         this._EulButton.mousePressed(() => this.rotationType = "Euler");
         this._RPYButton.mousePressed(() => this.rotationType = "RPY");
         this._animateButton.mousePressed(() => this.animationRequested = true);
         this._wireframeButton.mousePressed(() => this.wireframe = !this.wireframe);
         this._resetButton.mousePressed(() => this.resetAngles(this._rollInput,this._pitchInput,this._yawInput));
+
+        // Highlight the selected rotation axis
+        this._rollSlider.mouseOver(() => this.rotationAxis = 1);
+        this._rollInput.mouseOver(() => this.rotationAxis = 1);
+        this._pitchSlider.mouseOver(() => this.rotationAxis = 2);
+        this._pitchInput.mouseOver(() => this.rotationAxis = 2);
+        this._yawSlider.mouseOver(() => this.rotationAxis = 3);
+        this._yawInput.mouseOver(() => this.rotationAxis = 3);
+
+        this._rollSlider.mouseOut(() => this.rotationAxis = 0);
+        this._rollInput.mouseOut(() => this.rotationAxis = 0);
+        this._pitchSlider.mouseOut(() => this.rotationAxis = 0);
+        this._pitchInput.mouseOut(() => this.rotationAxis = 0);
+        this._yawSlider.mouseOut(() => this.rotationAxis = 0);
+        this._yawInput.mouseOut(() => this.rotationAxis = 0);
+    }
+
+    updateElementColor(element, color) {
+        element.style('background-color', color);
     }
 
     /* 
@@ -134,7 +162,7 @@ class CustomGUI {
     * Returns: "Euler" or "RPY"
     */
     getRotation() {
-        return this.rotationType;
+        return [this.rotationType, this.rotationAxis];
     }
 
     /*

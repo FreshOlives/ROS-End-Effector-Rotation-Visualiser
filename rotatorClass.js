@@ -22,9 +22,11 @@ class Rotator {
     * Draw the current rotation axis
     * Input: rotState - the current rotation axis
     * Options: "X", "Y", "Z"
-    *          "" - no rotation axis
+    *         0 - no rotation axis
     */
     drawRotationAxis(rotState) {
+        push();
+        strokeWeight(3);
         if (rotState == "X") {
           push();  
             stroke(255,0,0);
@@ -34,25 +36,29 @@ class Rotator {
           push();
             stroke(0,255,0);
             line(0,-500,0,0,500,0);
-            pop();
+          pop();
         } else if (rotState == "Z") {
           push();
             stroke(0,0,255);
             line(0,0,-500,0,0,500);
           pop();
         }
+        pop();
       }
 
     /* Draw the object rotated by the given angles
     *  Input: angles [roll, pitch, yaw] - Rotation Angles in radians
     *         animatorState [i,j,k,rotAxis] - State of the animator
-    *         rotationType - Rotation convention ("RPY" or "Euler")
+    *         rotationType [convention, rotAxis] - Rotation convention ("RPY" or "Euler"), Current Rotation Axis ("X", "Y", "Z)
     *         drawLocalFrame - Draw the local frame axes (default: true)
     */
-    drawRotated(angles, animatorState = [1,1,1,0], rotationType = "RPY" ,drawLocalFrame = true) {
-        if (rotationType == "RPY") {
+    drawRotated(angles, animatorState = [1,1,1,0], rotationType = ["RPY",""] ,drawLocalFrame = true) {
+        if (rotationType[1] != 0) {
+          animatorState[3] = rotationType[1];
+        }
+        if (rotationType[0] == "RPY") {
             this.drawRPY(angles,animatorState,drawLocalFrame);
-        } else if (rotationType == "Euler") {
+        } else if (rotationType[0] == "Euler") {
             this.drawEul(angles,animatorState,drawLocalFrame);
         }
     }
@@ -128,7 +134,9 @@ class Rotator {
         push();
             rotate(angle,axis)
             this._drawobject();
-            if (drawLocalFrame) { this._drawAxes(); }
+            if (drawLocalFrame) { 
+              this._drawAxes();
+            }
             this.drawRotationAxis(rotAxis); // Inside of push/pop to draw in local coordinates
         pop();
     }
